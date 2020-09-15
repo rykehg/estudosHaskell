@@ -1,0 +1,114 @@
+fat :: Int -> Int 
+fat 0 = 1
+fat 1 = 1
+fat n = n * fat(n-1)
+
+fat 5 = 5 * fat 4 = 5 * 24 = 120
+fat 4 = 4 * fat 3 = 4 * 6 = 24
+fat 3 = 3 * fat 2 = 3 * 2 = 6
+fat 2 = 2 * fat 1 = 2 * 1 = 2
+fat 1 = 1
+==== MEMORIA ====
+fat 1 <=== SAI
+fat 2 <=== SAI
+fat 3 <=== SAI
+fat 4 <=== SAI
+fat 5 <=== SAI
+
+-----------------------------------------------------------------------------
+fat' :: Int -> Int -> Int
+ fat' _   0 = 1
+ fat' acc 1 = acc
+ fat' acc n = fat' (n*acc) (n-1)
+ 
+fat' 1 5 = fat' (5*1) 4
+ fat' (5*1) 4 = fat' (4*5*1) 3
+ fat' (4*5*1) 3 = fat' (3*4*5*1) 2
+ fat' (3*4*5*1) 2 = fat' (2*3*4*5*1) 1
+ fat' (2*3*4*5*1) 1 = 2*3*4*5*1 = 120
+
+-----------------------------------------------------------------------------
+fib' :: Int -> Int
+fib' = ([fibAux k | k <- [0..]] !!)
+    where 
+      fibAux 0 = 1
+      fibAux 1 = 1
+      fibAux k = fib' (k-1) + fib'(k-2)
+
+fib' 5 = [fibAux k | k <- [0..]] !! 5
+
+=> [fibAux 0, ...] = [1, ...]
+=> [1, fibAux 1,...] = [1,1, ...]
+=> [1,1,fibAux 2, ...] = [1,1,2,...]
+=> [1,1,2,fibAux 3, ...] = [1,1,2,3,...]
+=> [1,1,2,3,fibAux 4, ...] = [1,1,2,3,5,...]
+=> [1,1,2,3,5,fibAux 5, ...] = [1,1,2,3,5,8,...]
+
+fibAux 0 = 1
+fibAux 1 = 1
+fibAux 2 = fib' 0 + fib' 1 = 1 + 1 = 2
+fibAux 3 = fib' 2 + fib' 1 = 2 + 1 = 3
+fibAux 4 = fib' 3 + fib' 2 = 3 + 2 = 5
+fibAux 5 = fib' 4 + fib' 3 = 5 + 3 = 5
+
+========== PATTERN MATCHING DE LISTAS ============
+[] = LISTA VAZIA (0 ELEMENTOS)
+
+x:xs => x REPRESNETA UM ELEMENTO (head)
+        xs REPRESENTA O RESTO (tail)
+        UM OU MAUS ELEMENTOS
+
+"FATEC" BATE COM ESSE PADRAO? SIM
+x = 'F'
+xs = "ATEC"
+
+"F" BATE COM O PADRAO?
+x = 'F'
+xs = []
+
+x: [] => APENAS UM ELEMENTO
+"FATEC" N BATE COM ESSE PADRAO
+"A" BATE. x = 'A'
+
+==================================
+x : y : ys => DOIS OU MAIS ELEMENTOS
+"FATEC" BATE C ESSE PADRAO
+x = 'F'
+y = 'A'
+ys = "TEC"
+
+"A" N BATE C ESSE PADRAO
+
+x : y : [] => APENAS DOIS
+
+"FATEC" N BATE
+
+"FA" BATE
+
+x : y : _
+"FATEC" BATE, x = 'F', y = 'A', E O REST EH IGNORADO
+
+===========================
+EXEMPLO:
+
+a : b : _ : d : _ e : xs
+"HASKELL" BATE
+
+-------------------------------------------------------------------------------
+elimVogal :: String -> String 
+elimVogal [] = [] 
+elimVogal (x:xs) 
+    | elem x "AEIOUaeiou" = elimVogal xs
+    | otherwise = x : elimVogal xs 
+
+x = 'F', xs = "ATEC"
+x = 'A', xs = "TEC"
+x = 'T', xs = "EC"
+x = 'E', xs = "C"
+x = 'C', xs = []
+elimVogal "FATEC" = 'F' : elimVogal "ATEC" = 'F' : "TC" = "FTC"
+elimVogal "ATEC"  = elimVogal "TEC"        = "TC"
+elimVogal "TEC"   = 'T' : elimVogal "EC"   = 'T' : "C" = "TC"
+elimVogal "EC"    = elimVogal "C"          = "C"
+elimVogal "C"     = 'C' : elimVogal []     = 'C' : [] = "C"
+elimVogal []      = []
