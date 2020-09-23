@@ -1,0 +1,112 @@
+=======================
+Int -> Int -> Int = Int -> (Int -> Int) ==> 2 entradas Int
+/=
+(Int -> Int) -> Int ==> 1 entrada funçao
+
+somar :: Int -> Int -> Int -> Int 
+somar x y z = x+y+z
+
+let s = somar 1 2 = \z -> 1+2+z
+
+s 5 = 1+2+5 = 8
+
+let s' = somar 7 = \y z -> 7+y+z
+
+let s'' = s' 10
+
+s' 10 3 = 7+10+3 = 20
+
+s' 3 = 7+10+3 = 20
+
+==========================
+dobro :: Int -> Int 
+dobro x = 2*x
+
+foo :: (Int -> Int) -> Int 
+foo f = 1 + f 5
+
+foo dobro = 1 + dobro 5 = 1 + 2*5 = 1 + 10 = 11
+
+foo (3*) = 1 + (3*) 5 = 1 + 3*5 = 1 + 15 = 16
+
+foo (*7) = 1 + (*7) 5 = 1 + 5*7 = 1 + 35 = 16
+
+foo (+4) = 1 + (+4) 5 = 1 + (5+4) = 1 + 9 = 10
+
+foo (2-) = 1 + (2-) 5 = 1 + 2 - 5 = -2
+
+foo (\x -> x-2) = 1 + (\x -> x-2) 5 = 1 + (5-2) = 1+3 = 4
+
+===============================
+data Oper = Soma | Mult | Sub | Div   deriving Show
+
+oper :: Oper -> (Int -> Int -> Int)
+oper Soma = (+) 
+oper Sub  = (-) 
+oper Mult = (*) 
+oper Div  = \x y -> div x y
+
+let d = oper Div 
+
+d 10 2 = (\x y -> div x y) 10 2 = div 10 2 = 5 
+
+=====================================
+map :: (a -> b) -> [a] -> [b] 
+Recebe uma funçao (a -> b) e distribui ela
+para TODOS os elementos da lista [a] 
+
+f :: a -> b
+[a1, a2, ..., an]
+----------------------
+map f [a1, a2, ..., an] = [b1, b2, ..., bn]
+
+map dobro [1,2,3,4,5] =          [dobro 1, dobro 2, dobro 3, dobro 4,dobro 5] =          [2*1, 2*2,2*3,2*4,2*5]
+
+===========================
+filter :: (a -> Bool) -> [a] -> [a]
+Recebe um predicado (a -> Bool) e uma lista
+[a], retorna os elementos que retornarem True
+do predicado
+
+===============================================
+fold :: (b -> a -> b) -> b -> [a] -> b
+fold _ acc []     = acc
+fold f acc (x:xs) = fold f (f acc x) xs 
+
+int somar(int[] v){
+  int soma = 0;
+  for(int i=0; i < v.length; i++){
+    soma = soma + v[i];
+  }
+  return soma;
+}
+
+fold (\soma vi -> soma+vi) 0 [1,2,3,4,5] 
+
+usando currying:
+fold (+) 0 [1,2,3,4,5] = 
+fold (+) (0+1) [2,3,4,5] = 
+fold (+) (0+1+2) [3,4,5] = 
+fold (+) (0+1+2+3) [4,5] = 
+fold (+) (0+1+2+3+4) [5] = 
+fold (+) (0+1+2+3+4+5) [] = 0+1+2+3+4+5 = 10 
+
+=====================================================
+unfold :: (b -> Maybe (a,b)) -> b -> [a]
+unfold f x =    case f x of       Just (a,b) -> a : unfold f b       Nothing -> []
+
+naturais :: Int -> Maybe (Int,Int) 
+naturais n   | n <= 4 = Just (n,n+1)   | otherwise = Nothing
+
+-- Just (0,1)
+-- Just (1,2)
+-- Just (2,3) 
+-- Just (3,4)
+-- Just (4,5)
+unfold naturais 0 = 
+0 : unfold naturais 1 = 
+0 : 1 : unfold naturais 2 = 
+0 : 1 : 2 : unfold naturais 3 = 
+0 : 1 : 2 : 3 : unfold naturais 4 = 
+0 : 1 : 2 : 3 : 4 : unfold naturais 5 = 
+0 : 1 : 2 : 3 : 4 : [] = [0,1,2,3,4]
