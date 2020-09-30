@@ -1,0 +1,140 @@
+map :: (a -> b) -> [a] -> [b]
+
+Map é uma função de alta-ordem (parenteses à esquerda). Ela é ainda polimórfica. Ao inves de ter um tipo rígido, fixo, ela possui variáveis. Há duas variáveis de tipo a, b.
+
+mapStringInt :: (String -> Int) -> [String] -> Int
+mapIntInt :: (Int-> Int) -> [Int]-> Int
+mapDoubleBool (Double -> Bool) -> [Double] -> [Bool]
+
+
+oof . foo = id
+(oof.foo) (a,b) = (a,b)
+Teste de mesa
+	oof (foo(a,b))
+	(Foo  (a,b) False, foo (a,b) True)
+	(a,b)
+
+Teste de mesa 2
+(foo . oof) = id
+	foo (oof f)
+	foo(f False, f True)
+	1) SE CALCULAR EM FALSE
+		f False
+	2) SE CALCULAR EM TRUE
+		f True
+
+Logo, (a,a) e (Bool -> a ) são o mesmo tipo matematicamente
+
+
+TIPOS POLIMÓRFICOS
+	É quando um tipo possui varíaveis de tipo
+
+data Bolsa a = Bolsa a a a deriving Show
+
+Tipo ========= Valor
+Bolsa Int ==== Bolsa 5 4 7
+Bolsa Bool === Bolsa True False False
+Bolsa String == "Fatec" "Santos " Oi"
+
+:t Bolsa 1 2 3
+:t Bolsa "oi" "Santos" "Fatec"
+
+Mochila Int Bool ======== Mochila 4 8 False
+Mochila Bool String ===== Mochila False True "Oi"
+Mochila Bool Bool ======= Mochila True False True
+
+
+Mochila 4 5 "Oi"
+Mochila False True "Oi"
+
+:kind é uma forma de verificar o quão polimórfico é um tipo. Ele enxerga o tipo do tipo
+
+O kind * representa tipos monomórficos (constantes)
+
+Kind de True nao existe
+
+O kind * -> * representa tipos polimorficos com uma variavel
+
+Bolsa (Aluno "Teste" 18) (Aluno "Teste2" 30) (Aluno "Teste3" 40)
+
+
+Typeclasses: São restrições a funções/tipos polimorficos.
+Um tipo vai prover funções a serem implementadas de acordo com o tipo desejado.
+
+show :: Show a => a -> String
+
+O typeclass show vai prover implementações para cada 'a' de acordo com a necessidade do programador. O deriving provê essas implementações de forma automática. 
+
+class Show a where
+	show :: a -> String
+
+instance Show Curso where
+	show ADS = "ADS"
+	show SI = "SI"
+
+O deriving gera, de forma automatica, o trecho acima
+
+
+class Enumerar a where
+	enumerar :: a -> Int
+	
+instance Enumerar Curso where
+	enumerar ADS = 100
+	enumerar SI = 101
+	enumerar GE = 102
+	enumerar GP = 103
+	enumerar LOG = 104
+
+instance Enumerar Bool
+	enumerar False = 0
+	enumerar True = 1
+
+instance Enumerar [a] where
+	enumerar xs = length xs
+
+Tanto show como Enumerar restrigem tipos monoformicos
+
+instance Eq Curso where
+	ADS == SI = True
+	SI == ADS = False
+	_ ++ _ = False
+
+
+Monoide
+
+import Data.Monoid
+
+data Xor = Xor Bool deriving Show
+
+xor :: Bool -> Bool -> Bool
+xor False True = True
+xor True False = True
+xor _ _ = False
+
+
+instance Semigroup Xor where
+	Xor a <> Xor b = Xor (xor a b)
+
+instance Monoid Xor where
+	mempty = Xor False
+
+
+xor True False
+[3] ++ [5]
+[3] <> [5]
+Product 3 <> Product 5
+Sum 3 <> Sum 5
+
+
+foldl (+) 0 [2, 3, 4]
+
+foldl (*) 1 [2, 3, 4]
+
+foldl xor False [True, True]
+
+foldl (++) [] [[3],  [5]]
+
+foldl (<>) mepty [Sum 2, Sum 3, Sum 4]
+
+
+o mempty é um elemento neutro, como o 0 da soma ou 1 da multiplicação

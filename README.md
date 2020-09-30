@@ -21,4 +21,5 @@ ctrl + l (limpa tela)
 :r -------------- (reload recompila o arquivo)
 :t -------------- (retorna o tipo)
 :q -------------- (sair)
+:k -------------- (kind verifica o quão polimórfico é o tipo)
 ```
