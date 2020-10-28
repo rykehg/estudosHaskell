@@ -23,3 +23,8 @@ ctrl + l (limpa tela)
 :q -------------- (sair)
 :k -------------- (kind verifica o quão polimórfico é o tipo)
 ```
+
+Para compilar o programa fazer o arquivo Main com função main (Ex na aula 08) e usar o comando:
+```bash
+ghc Main.hs -o Main
+```

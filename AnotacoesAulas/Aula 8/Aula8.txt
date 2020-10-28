@@ -1,0 +1,28 @@
+tamanho :: String -> Int
+tamanho xs = length xs
+
+ 
+
+safeHead :: [] a -> Maybe a 
+safeHead [] = Nothing 
+safeHead xs = Just (head xs) 
+
+ 
+
+-- FMAP DO MAYBE FOI USADO
+(fmap tamanho . safeHead) ["OLA","MUNDO","FATEC","HASKELL"] =
+fmap tamanho (safeHead ["OLA","MUNDO","FATEC","HASKELL"]) = 
+fmap tamanho (Just (head ["OLA","MUNDO","FATEC","HASKELL"])) =
+fmap tamanho (Just "OLA") = 
+Just (tamanho "OLA") = 
+Just 3
+
+ 
+
+-- FMAP DA LISTA FOI USADO
+(safeHead . fmap tamanho) ["OLA","MUNDO","FATEC","HASKELL"] =
+safeHead (fmap tamanho ["OLA","MUNDO","FATEC","HASKELL"]) = 
+safeHead [tamanho "OLA",tamanho "MUNDO",tamanho "FATEC",tamanho "HASKELL"] =
+Just (head [tamanho "OLA",tamanho "MUNDO",tamanho "FATEC",tamanho "HASKELL"]) = 
+Just (tamanho "OLA") = 
+Just 3
