@@ -181,6 +181,9 @@ String s e um Int n . Esta deverá retornar as n primeiras letras
 em ordem reversa e o restante em sua ordem normal. Exemplo:
 revNum 4 "FATEC" = "ETAFC"-}
 
+revNum :: Int -> String -> String
+revNum n s = reverse (take n s) ++ drop n s
+
 {- 3.11. Crie o tipo de dado Binario que pode ser Zero ou Um. Faça outro tipo de dado 
 chamado Funcao que pode ser Soma2, Maior, Menor ou Mult2. Implemente a função 
 aplicar que recebe uma Funcao e dois Binarios. Seu retorno consiste em executar 
@@ -240,18 +243,46 @@ Metros 2 4.0
 Use o pattern matching para ignorar as metragens erradas (calcular a área de um quadrado 
 com um lado de dimensão 4 não é válido). -}
 
+data Metros = Metros {dimensao :: Int, valor :: Double} deriving Show
+
+areaQuadrado :: Metros -> Metros
+areaQuadrado (Metros {dimensao=d, valor=v}) = Metros (d+1) (v*v)
+
+areaRet :: Metros -> Metros -> Metros
+areaRet (Metros {dimensao=d1, valor=v1}) (Metros {dimensao=d2, valor=v2}) = Metros (d1+1) (v1*v2)
+
+areaCubo :: Metros -> Metros
+areaCubo (Metros {dimensao=3, valor=v}) = Metros 3 (v^3)
+
 {- 3.14. Faça o novo tipo  Valido  que possui dois value constructors Sim e Nao . O value
 constructor  Sim possui um parâmetro (campo)  String . Implemente uma função isNomeValido 
 que recebe um nome e retorna  Nao caso a String seja vazia; caso contrário, Sim . -}
 
+-- Alterei os value constructors para Yes e No já que os value constructors Sim e Nao foram utilizados no Exercicio 3.1
+data Valido = Yes | No deriving Show
+
+isNomeValido :: String -> Valido
+isNomeValido a = if length a == 0 then No else Yes
+
 {- 3.15. Refaça o exercício 3 do capítulo anterior usando record syntax e tipos com 
 parâmetro (siga o exemplo da conversão de medidas SI para imperial). -}
+
+data TipoPalavra = Adjetivo {palavraEmString :: String} | Substantivo {palavraEmString :: String} | Verbo {palavraEmString :: String} deriving Show
+
+inverterPalavras :: [TipoPalavra] -> [String]
+inverterPalavras palavras = [reverse (palavraEmString plv) | plv <- palavras]
 
 {- 3.16. Faça o tipo Numero , que possui um value constructor Ok com um campo double 
 e outro value constructor com um campo String . Faça a função dividir que divida dois
 números e, caso o segundo número seja 0, emita um erro (use o pattern matching). Exemplo:
 Prelude> dividir (Numero 6) (Numero 5) 
 Numero 1.2. Erro -}
+
+data Numero = Ok Double | Erro String deriving Show
+
+dividir :: Numero -> Numero -> Numero
+dividir (Ok num1) (Ok num2) = (Ok (num1/num2))
+dividir (Ok num1) (Erro "0") = (Erro ("Nao e possivel dividir por zero."))
 
 {- 3.17. Faça o tipo Cripto que possua dois values constructors Mensagem e Cifrado,
 ambos com um campo String e um value constructor Erro. Faça as funções 
